@@ -1,0 +1,28 @@
+{
+    "name": "vaahcms/course",
+    "description": "Course Management between student,course and teachers table",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "vaah",
+            "email": "support@vaah.dev"
+        }
+    ],
+    "require": {
+        "php": "^7.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VaahCms\\Modules\\Course\\Providers\\CourseServiceProvider"
+            ],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "VaahCms\\Modules\\Course\\": ""
+        }
+    }
+}
