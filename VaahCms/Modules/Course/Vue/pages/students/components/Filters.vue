@@ -137,6 +137,24 @@ const store = useStudentStore();
 
             </VhFieldVertical>
 
+            <VhFieldVertical >
+                <template #label>
+                    <b>Courses:</b>
+                </template>
+
+                <div class="field-radiobutton">
+                    <div class="p-inputgroup">
+                        <Dropdown v-model="store.query.filter.course"
+                                :options="store.assets.courses"
+                                optionValue="id"
+                                optionLabel="name"
+                                placeholder="Select your course"
+                                class="w-full"/>
+                    </div>
+                </div>
+                
+            </VhFieldVertical>
+
 
         </Panel>
 

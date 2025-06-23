@@ -9,6 +9,7 @@ use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Teacher extends VaahModel
 {
@@ -44,10 +45,39 @@ class Teacher extends VaahModel
     ];
 
     //-------------------------------------------------
-    protected $appends = [
+    protected $appends = [ 
+        'course_name'
     ];
 
+    //Accessor
+    public function CourseName(): Attribute
+    {
+        // If the 'course' relation is already loaded, this prevents an extra query
+        // if ($this->relationLoaded('course')) {
+        //     return Attribute::make(
+        //         get: fn() => $this->course->name,
+        //     );
+        // }
+
+        // Otherwise, count via query
+        return Attribute::make(
+            get: fn() => $this->course->name,
+        );
+    }
+
     //-------------------------------------------------
+    //Defining the relationships 
+     public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+    public function students()
+    {
+    return $this->belongsToMany(Student::class);
+    }
+
+    //-------------------------------------------------
+
     protected function serializeDate(DateTimeInterface $date)
     {
         $date_time_format = config('settings.global.datetime_format');
@@ -268,10 +298,27 @@ class Teacher extends VaahModel
             $query->where(function ($q1) use ($search_item) {
                 $q1->where('name', 'LIKE', '%' . $search_item . '%')
                     ->orWhere('slug', 'LIKE', '%' . $search_item . '%')
-                    ->orWhere('id', 'LIKE', $search_item . '%');
+                    ->orWhere('id', 'LIKE', $search_item . '%')
+                    ->orWhere('email', 'LIKE', $search_item . '%')
+                    ->orWhereHas('course', function ($q2) use ($search_item) {
+                        $q2->where('name', 'LIKE', $search_item . '%');})
+                    ->orWhere('phone', 'LIKE', $search_item . '%');
             });
         }
 
+    }
+    //-------------------------------------------------
+    public function scopeCourseAllotted($query, $filter)
+    {
+        if (!isset($filter['course'])) {
+            return $query;
+        }
+
+        $courseIds = explode(' ', $filter['course']);
+
+        return $query->whereHas('course', function ($q) use ($courseIds) {
+            $q->whereIn('id', $courseIds);
+        });
     }
     //-------------------------------------------------
     public static function getList($request)
@@ -280,6 +327,7 @@ class Teacher extends VaahModel
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->courseAllotted($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -290,6 +338,7 @@ class Teacher extends VaahModel
 
         $list = $list->paginate($rows);
 
+        
         $response['success'] = true;
         $response['data'] = $list;
 
@@ -648,13 +697,5 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     //-------------------------------------------------
 
-    public function course()
-    {
-        return $this->belongTO(Course::Class);
-    }
-    public function students()
-    {
-    return $this->belongsToMany(Student::class);
-    }
-
+   
 }

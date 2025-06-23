@@ -41,7 +41,7 @@ const useVaah = vaah();
 
             </Column>
 
-            <Column field="course_id" header="Course Name"
+            <Column field="course_name" header="Course Name"
                     class="overflow-wrap-anywhere"
                     :sortable="true">
 
@@ -49,7 +49,7 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.course_id}}
+                    {{prop.data.course_name}}
                 </template>
 
             </Column>

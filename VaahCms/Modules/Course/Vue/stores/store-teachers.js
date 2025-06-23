@@ -221,7 +221,10 @@ export const useTeacherStore = defineStore({
         {
             if(data)
             {
+                // data['courses'] = data['courses'].map((course) => {return course['id']})
+                console.log(data);
                 this.list = data;
+              
             }
         },
         //---------------------------------------------------------------------

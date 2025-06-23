@@ -9,6 +9,7 @@ use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Student extends VaahModel
 {
@@ -44,12 +45,24 @@ class Student extends VaahModel
 
     //-------------------------------------------------
     protected $appends = [
+        'course_count'
     ];
 
     //-------------------------------------------------
+    //Accessor to add the field in the table
+     public function CourseCount(): Attribute
+    {
+    
+        return Attribute::make(
+            get: fn() => $this->courses->count(),
+        );
+    }
+
+    
+    // for relationship between the model
     public function courses()
     {
-    return $this->belongsToMany(Course::class,'co_course_co_student','student_id','course_id');
+    return $this->belongsToMany(Course::class,'co_course_co_student','co_student_id','co_course_id');
     }
 
     //-------------------------------------------------
@@ -186,8 +199,8 @@ class Student extends VaahModel
         }
 
         //Implementing many to many relationship between courses and student table
-        $courseIds = $inputs['course_id'];
-        unset($inputs['course_id']);
+        $courseIds = $inputs['courses'];
+        unset($inputs['courses']);
         // dd($inputs);
         
         $item = new self();
@@ -284,10 +297,26 @@ class Student extends VaahModel
             $query->where(function ($q1) use ($search_item) {
                 $q1->where('name', 'LIKE', '%' . $search_item . '%')
                     ->orWhere('slug', 'LIKE', '%' . $search_item . '%')
-                    ->orWhere('id', 'LIKE', $search_item . '%');
+                    ->orWhere('id', 'LIKE', $search_item . '%')
+                    ->orWhere('email', 'LIKE', $search_item . '%')
+                    ->orWhere('gender', 'LIKE', $search_item . '%')
+                    ->orWhere('dob', 'LIKE', $search_item . '%');
             });
         }
 
+    }
+    //-------------------------------------------------
+    public function scopeEnrolledStudent($query, $filter)
+    {
+        if (!isset($filter['course'])) {
+            return $query;
+        }
+
+        $courseIds = explode(' ', $filter['course']);
+
+        return $query->whereHas('courses', function ($q) use ($courseIds) {
+            $q->whereIn('co_course_id', $courseIds);
+        });
     }
     //-------------------------------------------------
     public static function getList($request)
@@ -296,6 +325,7 @@ class Student extends VaahModel
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->enrolledStudent($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -474,6 +504,7 @@ class Student extends VaahModel
 
         $item = self::where('id', $id)
             ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
+            ->with('courses')
             ->withTrashed()
             ->first();
 
@@ -493,6 +524,7 @@ class Student extends VaahModel
     public static function updateItem($request, $id)
     {
         $inputs = $request->all();
+        // dd($inputs);
 
         $validation = self::validation($inputs);
         if (!$validation['success']) {
@@ -525,7 +557,12 @@ class Student extends VaahModel
 
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
+        // dd($item->courses);
+        $courseIds = $inputs['courses'];
+        unset($inputs['courses']);
+
         $item->save();
+        $item->courses()->attach($courseIds);
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");

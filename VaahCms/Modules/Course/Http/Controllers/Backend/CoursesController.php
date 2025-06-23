@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VaahCms\Modules\Course\Models\Course;
+use VaahCms\Modules\Course\Models\Teacher;
 
 
 class CoursesController extends Controller
@@ -30,6 +31,7 @@ class CoursesController extends Controller
             $data['fillable']['columns'] = Course::getFillableColumns();
             $data['fillable']['except'] = Course::getUnFillableColumns();
             $data['empty_item'] = Course::getEmptyItem();
+       
 
             $data['actions'] = [];
 

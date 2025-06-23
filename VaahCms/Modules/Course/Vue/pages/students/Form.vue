@@ -171,9 +171,9 @@ const toggleFormMenu = (event) => {
 
                 <VhField label="Course">
                     <div class="p-inputgroup">
-                        <MultiSelect v-model="store.item.course_id"
+                        <MultiSelect v-model="store.item.courses"
                                 :options="store.assets.courses"
-                                option-value="id"
+                                optionValue="id"
                                 optionLabel="name"
                                 placeholder="Select your course"
                                 class="w-full"/>
@@ -190,6 +190,7 @@ const toggleFormMenu = (event) => {
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
+
 
                  <VhField label="gender">
                     <div class="p-inputgroup">

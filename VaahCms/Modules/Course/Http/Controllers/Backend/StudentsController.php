@@ -186,6 +186,7 @@ class StudentsController extends Controller
     public function updateItem(Request $request,$id)
     {
         try{
+            
             return Student::updateItem($request,$id);
         }catch (\Exception $e){
             $response = [];

@@ -9,6 +9,7 @@ use WebReinvent\VaahCms\Models\VaahModel;
 use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Course extends VaahModel
 {
@@ -42,16 +43,28 @@ class Course extends VaahModel
 
     //-------------------------------------------------
     protected $appends = [
+        'student_count'
     ];
-
-    public function teachers()
+    //-------------------------------------------------
+    //Accessor for adding the columns in the table.
+    public function StudentCount(): Attribute
     {
-        return $this->hasMany(Teacher::Class);
+    
+        return Attribute::make(
+            get: fn() => $this->students()->count() ?? null,
+        );
     }
 
-    public function courses()
+
+    //Relationship between the teacher and student table.
+    public function teachers()
     {
-     return $this->belongsToMany(Course::class, 'co_course_co_student', 'student_id', 'course_id');
+        return $this->hasMany(Teacher::class);
+    }
+
+    public function students()
+    {
+     return $this->belongsToMany(Student::class, 'co_course_co_student', 'co_course_id', 'co_student_id');
     }
 
     //-------------------------------------------------
@@ -275,7 +288,8 @@ class Course extends VaahModel
             $query->where(function ($q1) use ($search_item) {
                 $q1->where('name', 'LIKE', '%' . $search_item . '%')
                     ->orWhere('slug', 'LIKE', '%' . $search_item . '%')
-                    ->orWhere('id', 'LIKE', $search_item . '%');
+                    ->orWhere('id', 'LIKE', $search_item . '%')
+                    ->orWhere('description', 'LIKE', $search_item . '%');
             });
         }
 
@@ -283,6 +297,7 @@ class Course extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
+
         $list = self::getSorted($request->filter);
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
@@ -296,6 +311,8 @@ class Course extends VaahModel
         }
 
         $list = $list->paginate($rows);
+       
+
 
         $response['success'] = true;
         $response['data'] = $list;

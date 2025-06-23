@@ -17,8 +17,8 @@ class CoCourseCoStudent extends Migration
         Schema::create('co_course_co_student', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uuid')->nullable()->index();
-            $table->unsignedBigInteger('student_id')->nullable()->index();
-            $table->unsignedBigInteger('course_id')->nullable()->index();
+            $table->unsignedBigInteger('co_student_id')->nullable()->index();
+            $table->unsignedBigInteger('co_course_id')->nullable()->index();
 
             //----common fields
             $table->text('meta')->nullable();

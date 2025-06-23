@@ -54,6 +54,19 @@ const useVaah = vaah();
 
             </Column>
 
+            <Column field="course_count" header="Enrolled Course"
+                    class="overflow-wrap-anywhere"
+                    :sortable="true">
+
+                <template #body="prop">
+                    <Badge v-if="prop.data.deleted_at"
+                           value="Trashed"
+                           severity="danger"></Badge>
+                    {{prop.data.course_count}}
+                </template>
+
+            </Column>
+
             <Column field="gender" header="Gender"
                     class="overflow-wrap-anywhere"
                     :sortable="true">
