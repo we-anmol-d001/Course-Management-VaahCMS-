@@ -29,17 +29,17 @@ const items = ref([
                 route: "/"
             },
             {
-                label: 'teachers',
+                label: 'Teachers',
                 icon: 'fa-regular fa-chart-bar',
                 route: "/teachers"
             },
             {
-                label: 'courses',
+                label: 'Courses',
                 icon: 'fa-regular fa-chart-bar',
                 route: "/courses"
             },
             {
-                label: 'students',
+                label: 'Students',
                 icon: 'fa-regular fa-chart-bar',
                 route: "/students"
             },

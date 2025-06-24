@@ -10,6 +10,8 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Mail\StudentRegisteredMail;
+use WebReinvent\VaahCms\Libraries\VaahMail;
 
 class Student extends VaahModel
 {
@@ -199,7 +201,7 @@ class Student extends VaahModel
         }
 
         //Implementing many to many relationship between courses and student table
-        $courseIds = $inputs['courses'];
+        $course_ids = $inputs['courses'];
         unset($inputs['courses']);
         // dd($inputs);
         
@@ -208,10 +210,21 @@ class Student extends VaahModel
         // dd($item);
         
        
-       
-
         $item->save();
-        $item->courses()->attach($courseIds);
+        $item->courses()->attach($course_ids);
+
+        // Email sending logic------
+        $item->load('courses');
+        //  dd($item);
+        $mail = new StudentRegisteredMail($item); 
+        $to = [$item->email];
+        // $cc = [];
+        // $bcc = [];
+        // // dd($mail);
+
+        VaahMail::send($mail, $to); 
+
+       
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
@@ -312,10 +325,10 @@ class Student extends VaahModel
             return $query;
         }
 
-        $courseIds = explode(' ', $filter['course']);
+        $course_ids = explode(' ', $filter['course']);
 
-        return $query->whereHas('courses', function ($q) use ($courseIds) {
-            $q->whereIn('co_course_id', $courseIds);
+        return $query->whereHas('courses', function ($q) use ($course_ids) {
+            $q->whereIn('co_course_id', $course_ids);
         });
     }
     //-------------------------------------------------
@@ -558,12 +571,13 @@ class Student extends VaahModel
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
         // dd($item->courses);
-        $courseIds = $inputs['courses'];
-        unset($inputs['courses']);
+        $course_ids = $inputs['courses'];
+    
 
         $item->save();
-        $item->courses()->attach($courseIds);
+        $item->courses()->sync($course_ids);
 
+        
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
         return $response;
@@ -622,7 +636,10 @@ class Student extends VaahModel
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
+            'email'=> 'required|email'
+
         );
+
 
         $validator = \Validator::make($inputs, $rules);
         if ($validator->fails()) {
@@ -675,7 +692,9 @@ class Student extends VaahModel
             'model_namespace' => self::class,
             'except' => self::getUnFillableColumns()
         ]);
+        
         $fillable = VaahSeeder::fill($request);
+    
         if(!$fillable['success']){
             return $fillable;
         }

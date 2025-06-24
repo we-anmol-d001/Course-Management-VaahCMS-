@@ -593,6 +593,7 @@ class Course extends VaahModel
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
+    
         );
 
         $validator = \Validator::make($inputs, $rules);

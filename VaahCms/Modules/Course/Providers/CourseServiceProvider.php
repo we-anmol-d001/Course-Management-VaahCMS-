@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use VaahCms\Modules\Course\Providers\RouteServiceProvider;
 use VaahCms\Modules\Course\Providers\EventServiceProvider;
+use VaahCms\Modules\Course\Models\Student;
+use VaahCms\Modules\Course\Observers\StudentObserver;
 
 class CourseServiceProvider extends ServiceProvider
 {
@@ -33,8 +35,15 @@ class CourseServiceProvider extends ServiceProvider
         $this->registerSeeders();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
+        $this->registerObservers();
     }
-
+    /** 
+     * Register student observer function for sending the email.
+     */
+    private function registerObservers()
+    {
+    Student::observe(StudentObserver::class);
+    }
 
     /**
      * Register the service provider.

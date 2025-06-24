@@ -4,6 +4,7 @@ import { useTeacherStore } from '../../stores/store-teachers'
 
 import VhField from './../../vaahvue/vue-three/primeflex/VhField.vue'
 import {useRoute} from 'vue-router';
+import InputNumber from "primevue/inputnumber";
 
 
 const store = useTeacherStore();
@@ -182,10 +183,11 @@ const toggleFormMenu = (event) => {
 
                  <VhField label="Phone No.">
                     <div class="p-inputgroup">
-                        <InputText class="w-full"
+                        <InputNumber class="w-full"
                                    placeholder="Enter your phone number"
                                    name="teachers-phone"
                                    data-testid="teachers-phone"
+                                   :useGrouping="false"
                                    v-model="store.item.phone" required/>
                         <div class="required-field hidden"></div>
                     </div>

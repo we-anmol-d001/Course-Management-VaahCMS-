@@ -35,6 +35,7 @@ import Tag from "primevue/tag";
 import Dropdown from 'primevue/dropdown';
 import Calendar from 'primevue/calendar';
 import MultiSelect from 'primevue/multiselect';
+import InputNumber from 'primevue/inputnumber';
 
 
 
@@ -93,6 +94,7 @@ app.component('Tag', Tag);
 app.component('Dropdown', Dropdown);
 app.component('Calendar',Calendar)
 app.component('MultiSelect',MultiSelect)
+app.component('InputNumber',InputNumber)
 
 //-------------/CRUD PrimeVue Use
 

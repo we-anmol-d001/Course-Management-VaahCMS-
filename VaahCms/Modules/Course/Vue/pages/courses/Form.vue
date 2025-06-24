@@ -164,7 +164,7 @@ const toggleFormMenu = (event) => {
                                    placeholder="Enter course details"
                                    name="courses-description"
                                    data-testid="courses-description"
-                                   v-model="store.item.description" required/>
+                                   v-model="store.item.description"/>
                         <div class="required-field hidden"></div>
                     </div>
                 </VhField>
