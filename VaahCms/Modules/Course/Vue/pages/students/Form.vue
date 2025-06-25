@@ -196,7 +196,7 @@ const toggleFormMenu = (event) => {
                     <div class="p-inputgroup">
                          <Dropdown v-model="store.item.gender"
                                 :options="store.assets.gender_taxonomies"
-                                optionValue="name"
+                                optionValue="id"
                                 optionLabel="name"
                                 placeholder="Select your gender"
                                 class="w-full"/>

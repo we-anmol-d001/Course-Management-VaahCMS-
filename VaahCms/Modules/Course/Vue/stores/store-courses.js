@@ -210,6 +210,8 @@ export const useCourseStore = defineStore({
             let options = {
                 query: vaah().clone(this.query)
             };
+            this.assets_is_fetching = true;
+            this.getAssets();
             await vaah().ajax(
                 this.ajax_url,
                 this.afterGetList,

@@ -210,6 +210,10 @@ export const useStudentStore = defineStore({
             let options = {
                 query: vaah().clone(this.query)
             };
+
+            this.assets_is_fetching = true;
+            this.getAssets();
+            
             await vaah().ajax(
                 this.ajax_url,
                 this.afterGetList,
@@ -461,6 +465,7 @@ export const useStudentStore = defineStore({
                     }
                     break;
                 case 'delete':
+                   
                     this.item = null;
                     this.toList();
                     break;

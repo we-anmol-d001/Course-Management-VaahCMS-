@@ -10,8 +10,10 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use App\Mail\StudentRegisteredMail;
+use WebReinvent\VaahCms\Models\Taxonomy;
+
 use WebReinvent\VaahCms\Libraries\VaahMail;
+use VaahCms\Modules\Course\Mails\StudentRegisteredMail;
 
 class Student extends VaahModel
 {
@@ -51,8 +53,8 @@ class Student extends VaahModel
     ];
 
     //-------------------------------------------------
-    //Accessor to add the field in the table
-     public function CourseCount(): Attribute
+    //Accessor to add the field in the table of course
+     public function courseCount(): Attribute
     {
     
         return Attribute::make(
@@ -61,10 +63,16 @@ class Student extends VaahModel
     }
 
     
-    // for relationship between the model
+    // for relationship between the courses and student.
     public function courses()
     {
     return $this->belongsToMany(Course::class,'co_course_co_student','co_student_id','co_course_id');
+    }
+    public function gender()
+    {
+        return $this->belongsTo(Taxonomy::class,
+            'gender', 'id'
+        );
     }
 
     //-------------------------------------------------
@@ -202,12 +210,9 @@ class Student extends VaahModel
 
         //Implementing many to many relationship between courses and student table
         $course_ids = $inputs['courses'];
-        unset($inputs['courses']);
-        // dd($inputs);
         
         $item = new self();
         $item->fill($inputs);
-        // dd($item);
         
        
         $item->save();
@@ -215,13 +220,10 @@ class Student extends VaahModel
 
         // Email sending logic------
         $item->load('courses');
-        //  dd($item);
         $mail = new StudentRegisteredMail($item); 
         $to = [$item->email];
-        // $cc = [];
-        // $bcc = [];
-        // // dd($mail);
-
+        
+        // For sending the email
         VaahMail::send($mail, $to); 
 
        
@@ -334,7 +336,7 @@ class Student extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
-        $list = self::getSorted($request->filter);
+        $list = self::getSorted($request->filter)->with('gender');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
@@ -420,8 +422,9 @@ class Student extends VaahModel
     //-------------------------------------------------
     public static function deleteList($request): array
     {
+        
         $inputs = $request->all();
-
+        
         $rules = array(
             'type' => 'required',
             'items' => 'required',
@@ -442,6 +445,12 @@ class Student extends VaahModel
         }
 
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
+
+        $students = self::whereIn('id', $items_id)->get();
+        foreach ($students as $student) {
+        $student->courses()->detach(); 
+        }
+
         self::whereIn('id', $items_id)->forceDelete();
 
         $response['success'] = true;
@@ -462,7 +471,7 @@ class Student extends VaahModel
             $list->trashedFilter($request->filter);
             $list->searchFilter($request->filter);
         }
-
+        
         switch ($type) {
             case 'activate-all':
                 $list->withTrashed()->where(function ($q){
@@ -481,6 +490,10 @@ class Student extends VaahModel
                     ->each->restore();
                 break;
             case 'delete-all':
+                $students = $list->get();
+                foreach ($students as $student) {
+                    $student->courses()->detach(); 
+                }
                 $list->forceDelete();
                 break;
             case 'create-100-records':
@@ -537,14 +550,12 @@ class Student extends VaahModel
     public static function updateItem($request, $id)
     {
         $inputs = $request->all();
-        // dd($inputs);
 
         $validation = self::validation($inputs);
         if (!$validation['success']) {
             return $validation;
         }
 
-        // check if name exist
         $item = self::where('id', '!=', $id)
             ->withTrashed()
             ->where('name', $inputs['name'])->first();
@@ -570,7 +581,7 @@ class Student extends VaahModel
 
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
-        // dd($item->courses);
+        
         $course_ids = $inputs['courses'];
     
 
@@ -586,11 +597,19 @@ class Student extends VaahModel
     //-------------------------------------------------
     public static function deleteItem($request, $id): array
     {
-        $item = self::where('id', $id)->withTrashed()->first();
+        
         if (!$item) {
             $response['success'] = false;
             $response['errors'][] = trans("vaahcms-general.record_does_not_exist");
             return $response;
+        }
+        
+        $items_id = [$item->id];
+
+
+        $students = self::whereIn('id', $items_id)->get();
+        foreach ($students as $student) {
+        $student->courses()->detach(); 
         }
         $item->forceDelete();
 
@@ -636,7 +655,7 @@ class Student extends VaahModel
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
-            'email'=> 'required|email'
+            'email'=> 'required|email',
 
         );
 
@@ -677,13 +696,19 @@ class Student extends VaahModel
             $item =  new self();
             $item->fill($inputs);
             $item->save();
-
+            $item->courses()->attach($inputs['courses']);
             $i++;
 
         }
 
     }
+ 
+    // Custom Utility Methods
+    public static function getGender(){
+        $genders = Taxonomy::getTaxonomyByType('gender');
 
+        return $genders->pluck('id')->toArray();
+    }
 
     //-------------------------------------------------
     public static function fillItem($is_response_return = true)
@@ -706,10 +731,24 @@ class Student extends VaahModel
          * You can override the filled variables below this line.
          * You should also return relationship from here
          */
+        $name = $faker->name;
+        $inputs['name']=$name;
+        $inputs['slug'] = \Str::slug($name);
+
+        $course_ids= Course::pluck('id')->toArray();      
+        $max_count = count($course_ids);
+        $count = min(2, $max_count);
+        $inputs['courses'] =  $count > 0 ? $faker->randomElements($course_ids, $count) : [];
+
+        $inputs['email'] = $faker->email;
+         $inputs['gender'] = $faker->randomElement(self::getGender());
+        $inputs['dob']=$faker->date();
 
         if(!$is_response_return){
             return $inputs;
         }
+
+      
 
         $response['success'] = true;
         $response['data']['fill'] = $inputs;

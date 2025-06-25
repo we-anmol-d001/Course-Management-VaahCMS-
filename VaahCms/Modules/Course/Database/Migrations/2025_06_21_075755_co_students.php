@@ -23,7 +23,7 @@ class CoStudents extends Migration
                 $table->string('slug')->nullable()->index();
                 $table->string('email')->nullable()->index();
                 $table->date('dob')->nullable()->index();
-                $table->string('gender')->nullable()->index();
+                $table->unsignedBigInteger('gender')->nullable()->index();
                 $table->boolean('is_active')->nullable()->index();
 
 

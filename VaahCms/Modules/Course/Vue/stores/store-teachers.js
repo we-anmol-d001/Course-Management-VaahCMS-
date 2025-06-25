@@ -210,6 +210,8 @@ export const useTeacherStore = defineStore({
             let options = {
                 query: vaah().clone(this.query)
             };
+            this.assets_is_fetching = true;
+            this.getAssets();
             await vaah().ajax(
                 this.ajax_url,
                 this.afterGetList,
@@ -221,8 +223,8 @@ export const useTeacherStore = defineStore({
         {
             if(data)
             {
-                // data['courses'] = data['courses'].map((course) => {return course['id']})
-                console.log(data);
+            
+            
                 this.list = data;
               
             }

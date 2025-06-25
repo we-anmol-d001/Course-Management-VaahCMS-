@@ -407,6 +407,11 @@ class Course extends VaahModel
         }
 
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
+        $courses = self::whereIn('id', $items_id)->get();
+        foreach ($courses as $course) {
+        $course->students()->detach(); 
+        }
+
         self::whereIn('id', $items_id)->forceDelete();
 
         $response['success'] = true;
@@ -446,6 +451,10 @@ class Course extends VaahModel
                     ->each->restore();
                 break;
             case 'delete-all':
+                $courses = $list->get();
+                foreach ($courses as $course) {
+                    $course->students()->detach(); 
+                }
                 $list->forceDelete();
                 break;
             case 'create-100-records':
@@ -631,7 +640,9 @@ class Course extends VaahModel
 
             $item =  new self();
             $item->fill($inputs);
+            
             $item->save();
+            // $item->students()->attach($inputs['students']);
 
             $i++;
 
@@ -659,6 +670,12 @@ class Course extends VaahModel
          * You can override the filled variables below this line.
          * You should also return relationship from here
          */
+
+        $name = $faker->name;
+        $inputs['name']=$name;
+        $inputs['slug'] = \Str::slug($name);
+
+        $inputs['description']=$faker->paragraph;
 
         if(!$is_response_return){
             return $inputs;

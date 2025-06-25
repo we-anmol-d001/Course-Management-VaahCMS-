@@ -10,6 +10,7 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use WebReinvent\VaahCms\Models\Taxonomy;
 
 class Teacher extends VaahModel
 {
@@ -50,18 +51,10 @@ class Teacher extends VaahModel
     ];
 
     //Accessor
-    public function CourseName(): Attribute
+    public function courseName(): Attribute
     {
-        // If the 'course' relation is already loaded, this prevents an extra query
-        // if ($this->relationLoaded('course')) {
-        //     return Attribute::make(
-        //         get: fn() => $this->course->name,
-        //     );
-        // }
-
-        // Otherwise, count via query
-        return Attribute::make(
-            get: fn() => $this->course->name,
+            return Attribute::make(
+            get: fn() => $this->course?->name ?? '',
         );
     }
 
@@ -74,6 +67,12 @@ class Teacher extends VaahModel
     public function students()
     {
     return $this->belongsToMany(Student::class);
+    }
+    public function gender()
+    {
+        return $this->belongsTo(Taxonomy::class,
+            'gender', 'id'
+        );
     }
 
     //-------------------------------------------------
@@ -323,7 +322,7 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
-        $list = self::getSorted($request->filter);
+        $list = self::getSorted($request->filter)->with('gender');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
@@ -657,6 +656,8 @@ class Teacher extends VaahModel
 
             $item =  new self();
             $item->fill($inputs);
+            
+            $item->course_id = $inputs['course'];
             $item->save();
 
             $i++;
@@ -665,6 +666,12 @@ class Teacher extends VaahModel
 
     }
 
+    // Custom Utility Methods
+    public static function getGender(){
+        $genders = Taxonomy::getTaxonomyByType('gender');
+
+        return $genders->pluck('id')->toArray();
+    }
 
     //-------------------------------------------------
     public static function fillItem($is_response_return = true)
@@ -685,6 +692,19 @@ class Teacher extends VaahModel
          * You can override the filled variables below this line.
          * You should also return relationship from here
          */
+
+        $name = $faker->name;
+        $inputs['name']=$name;
+        $inputs['slug'] = \Str::slug($name);
+        
+        
+        $inputs['phone']=$faker->numerify('##########');
+        $inputs['gender'] = $faker->randomElement(self::getGender());
+    
+
+        $course_ids= Course::pluck('id')->toArray(); 
+         
+        $inputs['course'] = !empty($course_ids)? $faker->randomElement($course_ids): null;
 
         if(!$is_response_return){
             return $inputs;

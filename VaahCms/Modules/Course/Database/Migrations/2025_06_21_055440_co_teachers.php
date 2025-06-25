@@ -21,12 +21,13 @@ class CoTeachers extends Migration
 
                 $table->string('name')->nullable()->index();
                 $table->string('slug')->nullable()->index();
-                $table->unsignedBigInteger('course_id')->nullable();
+                $table->unsignedBigInteger('course_id')->nullable()->constrained()->nullOnDelete();
                 $table->string('email')->nullable()->index();
                 $table->string('phone')->nullable()->index();
-                $table->string('gender')->nullable()->index();
+                $table->unsignedBigInteger('gender')->nullable()->index();
                 $table->boolean('is_active')->nullable()->index();
 
+                $table->foreign('course_id')->references('id')->on('co_courses')->nullOnDelete();
 
                 //----common fields
                 $table->text('meta')->nullable();

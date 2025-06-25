@@ -27,6 +27,7 @@ onMounted(async () => {
     {
         await store.getItem(route.params.id);
     }
+    
 
 });
 
@@ -49,6 +50,7 @@ const toggleItemMenu = (event) => {
                 <div class="p-panel-title w-7 white-space-nowrap
                 overflow-hidden text-overflow-ellipsis">
                     #{{store.item.id}}
+        
                 </div>
 
             </template>
@@ -103,7 +105,7 @@ const toggleItemMenu = (event) => {
                         <div class="">
                             Deleted {{store.item.deleted_at}}
                         </div>
-
+                        
                         <div class="ml-3">
                             <Button label="Restore"
                                     class="p-button-sm"
@@ -119,11 +121,13 @@ const toggleItemMenu = (event) => {
                 <div class="p-datatable p-component p-datatable-responsive-scroll p-datatable-striped p-datatable-sm">
                 <table class="p-datatable-table overflow-wrap-anywhere">
                     <tbody class="p-datatable-tbody">
+                    
                     <template v-for="(value, column) in store.item ">
-
+                        
                         <template v-if="column === 'created_by' || column === 'updated_by'
-                        || column === 'deleted_by'">
+                        || column === 'deleted_by'|| column ==='courses' || column ==='gender'" >
                         </template>
+                        
 
                         <template v-else-if="column === 'id' || column === 'uuid'">
                             <VhViewRow :label="column"
@@ -131,6 +135,8 @@ const toggleItemMenu = (event) => {
                                        :can_copy="true"
                             />
                         </template>
+
+                       
 
                         <template v-else-if="(column === 'created_by_user' || column === 'updated_by_user'
                         || column === 'deleted_by_user') && (typeof value === 'object' && value !== null)">
