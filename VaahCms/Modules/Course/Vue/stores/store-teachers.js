@@ -244,6 +244,7 @@ export const useTeacherStore = defineStore({
         {
             if(data)
             {
+                
                 this.item = data;
             }else{
                 this.$router.push({name: 'teachers.index',query:this.query});

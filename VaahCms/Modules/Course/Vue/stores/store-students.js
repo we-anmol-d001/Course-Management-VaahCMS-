@@ -243,9 +243,15 @@ export const useStudentStore = defineStore({
         {
             if(data)
             {
-                data['courses'] = data['courses'].map((course) => {return course['id']})
+                 console.log(data['courses']);
+                const course_id = data['courses'].map(course => course.id);
 
-                this.item = data;
+                const course_names = data['courses'].map(course => course.name);
+
+                data['courses'] = course_id;
+                data['course_names'] = course_names;
+
+                 this.item = data;
             }else{
                 this.$router.push({name: 'students.index',query:this.query});
             }

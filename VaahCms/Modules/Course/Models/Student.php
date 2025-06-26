@@ -534,6 +534,7 @@ class Student extends VaahModel
             ->withTrashed()
             ->first();
 
+        // dd($item);    
         if(!$item)
         {
             $response['success'] = false;

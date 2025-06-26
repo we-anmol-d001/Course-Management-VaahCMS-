@@ -125,7 +125,7 @@ const toggleItemMenu = (event) => {
                     <template v-for="(value, column) in store.item ">
                         
                         <template v-if="column === 'created_by' || column === 'updated_by'
-                        || column === 'deleted_by'|| column ==='courses' || column ==='gender'" >
+                        || column === 'deleted_by'|| column ==='course' || column ==='gender'" >
                         </template>
                         
 

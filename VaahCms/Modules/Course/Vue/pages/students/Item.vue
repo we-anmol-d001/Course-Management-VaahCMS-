@@ -132,6 +132,13 @@ const toggleItemMenu = (event) => {
                             />
                         </template>
 
+                        <template v-else-if="column === 'course_names'">
+                            <VhViewRow :label="column"
+                                       :value="value"
+                                       :can_copy="true"
+                            />
+                        </template>
+
                         <template v-else-if="(column === 'created_by_user' || column === 'updated_by_user'
                         || column === 'deleted_by_user') && (typeof value === 'object' && value !== null)">
                             <VhViewRow :label="column"

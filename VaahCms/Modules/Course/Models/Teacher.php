@@ -503,7 +503,7 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public static function getItem($id)
     {
-
+    
         $item = self::where('id', $id)
             ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
             ->withTrashed()
@@ -515,6 +515,15 @@ class Teacher extends VaahModel
             $response['errors'][] = 'Record not found with ID: '.$id;
             return $response;
         }
+        
+        // For sending course_name to show course name when someone click eye icon
+        if ($item->course_id) {
+        $course = Course::find($item->course_id);
+        $item->course_name = $course ? $course->course_name : null;
+        } else {
+        $item->course_name = null;
+        }
+        
         $response['success'] = true;
         $response['data'] = $item;
 
