@@ -25,6 +25,19 @@ const toggleBulkMenuState = (event) => {
     bulk_menu_state.value.toggle(event);
 };
 //--------/bulk_menu_state
+
+
+function handleToggleFilter(filter_name){
+
+    if(filter_name === 'AdvanceFilter'){
+
+        store.show_advance_filters = !store.show_advance_filters
+        store.show_filters = false
+    } else if(filter_name === 'Filter') {
+        store.show_filters = !store.show_filters
+        store.show_advance_filters = false
+    }
+}
 </script>
 
 <template>
@@ -51,6 +64,14 @@ const toggleBulkMenuState = (event) => {
                       :model="store.list_selected_menu"
                       :popup="true" />
                 <!--/selected_menu-->
+                <Button
+                                type="button"
+                                class="p-button-sm"
+                                :disabled="Object.keys(route.params).length"
+                                data-testid="students-actions-show-advance_filters"
+                                @click="handleToggleFilter('AdvanceFilter')">
+                                Advance Filters
+                            </Button>
 
             </div>
             <!--/left-->
@@ -81,10 +102,12 @@ const toggleBulkMenuState = (event) => {
                                 class="p-button-sm"
                                 :disabled="Object.keys(route.params).length"
                                 data-testid="students-actions-show-filters"
-                                @click="store.show_filters = !store.show_filters">
+                                @click="handleToggleFilter('Filter')">
                                 Filters
                                 <Badge v-if="store.count_filters > 0" :value="store.count_filters"></Badge>
                             </Button>
+
+                            
 
                             <Button
                                 type="button"
@@ -93,6 +116,7 @@ const toggleBulkMenuState = (event) => {
                                 class="p-button-sm"
                                 label="Reset"
                                 @click="store.resetQuery()" />
+                                
 
                                 <!--bulk_menu-->
                                 <Button

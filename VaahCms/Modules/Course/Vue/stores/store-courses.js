@@ -52,6 +52,7 @@ export const useCourseStore = defineStore({
         route_prefix: 'courses.',
         view: 'large',
         show_filters: false,
+        show_advance_filters:false,
         list_view_width: 12,
         form: {
             type: 'Create',
@@ -110,6 +111,7 @@ export const useCourseStore = defineStore({
                     this.view = 'small';
                     this.list_view_width = 6;
                     this.show_filters = false;
+                    this.show_advance_filters = false;
                     break
             }
         },

@@ -24,7 +24,7 @@ const useVaah = vaah();
                     v-if="store.isViewLarge()"
                     headerStyle="width: 3em">
             </Column>
-
+    
             <Column field="id" header="ID" :style="{width: '80px'}" :sortable="true">
             </Column>
 
@@ -147,7 +147,7 @@ const useVaah = vaah();
                                 v-tooltip.top="'Trash'"
                                 icon="pi pi-trash" />
 
-
+                        
                         <Button class="p-button-tiny p-button-success p-button-text"
                                 data-testid="students-table-action-restore"
                                 v-if="store.isViewLarge() && prop.data.deleted_at"

@@ -167,6 +167,21 @@ class Course extends VaahModel
 
         $query->whereBetween('updated_at', [$from, $to]);
     }
+    //-------------------------------------------------
+    public function scopeStudentCountFilter($query, $filter)
+    {
+        if (isset($filter['student_count_min']) && isset($filter['student_count_max'])) {
+            $max = $filter['student_count_max'];
+            $min = $filter['student_count_min'];
+
+            return $query->withCount('students')
+            ->having('students_count', '>=', $min)
+            ->having('students_count', '<=', $max);
+        }
+
+        return $query;
+
+    }
 
     //-------------------------------------------------
     public static function createItem($request)
@@ -302,6 +317,7 @@ class Course extends VaahModel
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
+        $list->studentCountFilter($request->filter);
 
         $rows = config('vaahcms.per_page');
 

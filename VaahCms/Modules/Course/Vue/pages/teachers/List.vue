@@ -7,7 +7,8 @@ import {useRootStore} from '../../stores/root'
 
 import Actions from "./components/Actions.vue";
 import Table from "./components/Table.vue";
-import Filters from './components/Filters.vue'
+import Filters from './components/Filters.vue';
+import AdvanceFilter from './components/AdvanceFilter.vue';
 
 const store = useTeacherStore();
 const root = useRootStore();
@@ -65,7 +66,7 @@ const toggleCreateMenu = (event) => {
 
     <div class="grid" v-if="store.assets">
 
-        <div :class="'col-'+(store.show_filters?9:store.list_view_width)">
+        <div :class="'col-'+(store.show_filters|| store.show_advance_filters ?9:store.list_view_width)">
             <Panel class="is-small">
 
                 <template class="p-1" #header>
@@ -128,6 +129,7 @@ const toggleCreateMenu = (event) => {
         </div>
 
          <Filters/>
+         <AdvanceFilter/>
 
         <RouterView/>
 

@@ -224,7 +224,7 @@ class Student extends VaahModel
         $to = [$item->email];
         
         // For sending the email
-        VaahMail::send($mail, $to); 
+        // VaahMail::send($mail, $to); 
 
        
 
@@ -333,6 +333,39 @@ class Student extends VaahModel
             $q->whereIn('co_course_id', $course_ids);
         });
     }
+
+    public function scopeFilterByDob($query, $filter)
+    {
+        
+        if (!empty($filter['dob_from']) && !empty($filter['dob_to'])) {
+            return $query->whereBetween('dob', [$filter['dob_from'], $filter['dob_to']]);
+        }
+
+        if (!empty($filter['dob_from'])) {
+            return $query->where('dob', '>=', $filter['dob_from']);
+        }
+
+        if (!empty($filter['dob_to'])) {
+            return $query->where('dob', '<=', $filter['dob_to']);
+        }
+
+        return $query;
+    }
+
+    public function scopeCourseRange($query, $filter)
+    {
+        if (isset($filter['course_count_min']) && isset($filter['course_count_max'])) {
+            $max = $filter['course_count_max'];
+            $min = $filter['course_count_min'];
+
+            return $query->withCount('courses')
+            ->having('courses_count', '>=', $min)
+            ->having('courses_count', '<=', $max);
+        }
+
+        return $query;
+    }
+
     //-------------------------------------------------
     public static function getList($request)
     {
@@ -341,6 +374,8 @@ class Student extends VaahModel
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->enrolledStudent($request->filter);
+        $list->filterByDob($request->filter);
+        $list->courseRange($request->filter);
 
         $rows = config('vaahcms.per_page');
 
