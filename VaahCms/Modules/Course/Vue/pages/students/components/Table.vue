@@ -1,9 +1,15 @@
 <script setup>
 import { vaah } from '../../../vaahvue/pinia/vaah'
 import { useStudentStore } from '../../../stores/store-students'
+import { useRouter } from 'vue-router';
 
 const store = useStudentStore();
 const useVaah = vaah();
+const router = useRouter();
+function goToDetail(student) {
+    router.push({ name: 'courses.index', query: { filter:{student_id: student.id} } });
+
+}
 
 </script>
 
@@ -18,7 +24,7 @@ const useVaah = vaah();
                    :nullSortOrder="-1"
                    v-model:selection="store.action.items"
                    stripedRows
-                   responsiveLayout="scroll">
+                   responsiveLayout="scroll" >
 
             <Column selectionMode="multiple"
                     v-if="store.isViewLarge()"
@@ -62,7 +68,9 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.course_count}}
+                        <span @click="goToDetail(prop.data)" style="cursor: pointer; color: #007ad9;">
+                        {{ prop.data.course_count }}
+                        </span>
                 </template>
 
             </Column>

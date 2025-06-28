@@ -177,6 +177,7 @@ const toggleFormMenu = (event) => {
                                 optionLabel="name"
                                 placeholder="Select your course"
                                 filter
+                                display="chip"
                                 filterPlaceholder="Search courses..."
                                 class="w-full"/>
                     </div>

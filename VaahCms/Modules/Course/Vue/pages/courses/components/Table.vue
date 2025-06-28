@@ -1,10 +1,19 @@
 <script setup>
 import { vaah } from '../../../vaahvue/pinia/vaah'
 import { useCourseStore } from '../../../stores/store-courses'
+import { useRouter } from 'vue-router';
 
 const store = useCourseStore();
 const useVaah = vaah();
+const router = useRouter();
+function goToDetail(course) {
+    router.push({ name: 'students.index', query: { filter:{course_id: course.id} } });
 
+}
+function goToDetailTeacher(teacher) {
+    router.push({ name: 'teachers.index', query: { filter:{teacher_id: teacher.id} } });
+
+}
 </script>
 
 <template>
@@ -62,7 +71,26 @@ const useVaah = vaah();
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                    {{prop.data.student_count}}
+                           <span @click="goToDetail(prop.data)" style="cursor: pointer; color: #007ad9;">
+                            {{ prop.data.student_count }}
+                            </span>
+                    
+                </template>
+
+            </Column>
+
+            <Column field="teacher_count" header="Teachers"
+                    class="overflow-wrap-anywhere"
+                    :sortable="true">
+
+                <template #body="prop">
+                    <Badge v-if="prop.data.deleted_at"
+                           value="Trashed"
+                           severity="danger"></Badge>
+                           <span @click="goToDetailTeacher(prop.data)" style="cursor: pointer; color: #007ad9;">
+                            {{ prop.data.teacher_count }}
+                            </span>
+                    
                 </template>
 
             </Column>

@@ -45,15 +45,24 @@ class Course extends VaahModel
 
     //-------------------------------------------------
     protected $appends = [
-        'student_count'
+        'student_count',
+        'teacher_count'
     ];
     //-------------------------------------------------
     //Accessor for adding the columns in the table.
-    public function StudentCount(): Attribute
+    public function studentCount(): Attribute
     {
     
         return Attribute::make(
             get: fn() => $this->students()->count() ?? null,
+        );
+    }
+
+    public function teacherCount(): Attribute
+    {
+    
+        return Attribute::make(
+            get: fn() => $this->teachers()->count() ?? null,
         );
     }
 
@@ -295,7 +304,6 @@ class Course extends VaahModel
     //-------------------------------------------------
     public function scopeSearchFilter($query, $filter)
     {
-
         if(!isset($filter['q']))
         {
             return $query;
@@ -312,14 +320,43 @@ class Course extends VaahModel
 
     }
     //-------------------------------------------------
+    public static function scopeStudentRecord($query,$filter)
+    {
+        if (isset($filter['student_id'])) {
+            $id = $filter['student_id'];
+    
+            return $query->whereHas('students', function($q1) use ($id) {
+                $q1->where('co_students.id', $id);
+            } );
+        }
+
+        return $query;
+    }
+    //-------------------------------------------------
+    public function scopeEnrolledCourses($query, $filter)
+    {
+        
+        if (empty($filter['student']) || !is_array($filter['student'])) {
+            
+            return $query;
+        }
+     
+        return $query->whereHas('students', function ($q) use ($filter) {
+            $q->whereIn('co_student_id', $filter['student']);
+        });
+    }
+
+    //-------------------------------------------------
     public static function getList($request)
     {
-
         $list = self::getSorted($request->filter);
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->studentCountFilter($request->filter);
+        $list->studentRecord($request->filter);
+        $list->enrolledCourses($request->filter);
+        
 
         $rows = config('vaahcms.per_page');
 
@@ -330,7 +367,7 @@ class Course extends VaahModel
 
         $list = $list->paginate($rows);
        
-
+        
 
         $response['success'] = true;
         $response['data'] = $list;

@@ -5,7 +5,7 @@ import { useCourseStore } from '../../../stores/store-courses'
 import VhFieldVertical from '../../../vaahvue/vue-three/primeflex/VhFieldVertical.vue'
 
 const store = useCourseStore();
-const student_count_range = ref([0, 10])
+const student_count_range = ref([0, store.assets.total_students])
 
 watch(student_count_range, (range) => {
     store.query.filter.student_count_min = range[0]
@@ -55,13 +55,35 @@ watch(student_count_range, (range) => {
                         <Slider v-model="student_count_range"
                                 range
                                 :min="0" 
-                                :max="10"
+                                :max="store.assets.total_students"
                                 :step="1"
                                 class="w-full"/>
                     </div>
                 </div>
                 <div class="text-sm mt-1 text-gray-500">
-                    {{ student_count_range[0] }} - {{student_count_range[1] }}
+                    {{ student_count_range[0] }} - {{store.assets.total_students }}
+                </div>
+                
+            </VhFieldVertical>
+            
+            <VhFieldVertical >
+                <template #label>
+                    <b>Select student to see their courses:</b>
+                </template>
+
+                <div class="field-radiobutton">
+                    <div class="p-inputgroup">
+                        <MultiSelect
+                            v-model="store.query.filter.student"
+                            :options="store.assets.students"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select student(s)"
+                            class="w-full"
+                            display="chip"
+                            :filter="true"
+                        />
+                    </div>
                 </div>
                 
             </VhFieldVertical>

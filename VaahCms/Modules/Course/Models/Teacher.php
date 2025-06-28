@@ -322,6 +322,19 @@ class Teacher extends VaahModel
         });
     }
     //-------------------------------------------------
+    public function scopeteacherRecord($query,$filter)
+    {
+        if (isset($filter['teacher_id'])) {
+            $id = $filter['teacher_id'];
+    
+            return $query->whereHas('course', function($q1) use ($id) {
+                $q1->where('co_courses.id', $id);
+            } );
+        }
+
+        return $query;
+    }
+    //-------------------------------------------------
     public static function getList($request)
     {
         $list = self::getSorted($request->filter)->with('gender');
@@ -329,6 +342,7 @@ class Teacher extends VaahModel
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->courseAllotted($request->filter);
+        $list->teacherRecord($request->filter);
 
         $rows = config('vaahcms.per_page');
 
@@ -725,9 +739,9 @@ class Teacher extends VaahModel
     
 
         $course_ids= Course::pluck('id')->toArray(); 
-         
-        $inputs['course'] = !empty($course_ids)? $faker->randomElement($course_ids): null;
-
+                 
+        $inputs['course_id'] = !empty($course_ids)? $faker->randomElement($course_ids): null;
+    
         if(!$is_response_return){
             return $inputs;
         }

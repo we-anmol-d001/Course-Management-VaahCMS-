@@ -5,7 +5,7 @@ import { useStudentStore } from '../../../stores/store-students'
 import VhFieldVertical from '../../../vaahvue/vue-three/primeflex/VhFieldVertical.vue'
 
 const store = useStudentStore();
-const course_count_range = ref([0, 10])
+const course_count_range = ref([0, store.assets.total_courses])
 
 watch(course_count_range, (range) => {
     store.query.filter.course_count_min = range[0]
@@ -69,17 +69,17 @@ watch(course_count_range, (range) => {
                     <b>Enrolled courses range:</b>
                 </template>
                 <div >
-                    <div class="mb-2 p-2">
+                    <div class="mb-3 p-2">
                         <Slider v-model="course_count_range"
                                 range
                                 :min="0" 
-                                :max="10"
+                                :max="store.assets.total_courses"
                                 :step="1"
                                 class="w-full"/>
                     </div>
                 </div>
                 <div class="text-sm mt-1 text-gray-500">
-                    {{ course_count_range[0] }} - {{course_count_range[1] }}
+                    {{ course_count_range[0] }} - {{store.assets.total_courses }}
                 </div>
                 
             </VhFieldVertical>
@@ -93,12 +93,16 @@ watch(course_count_range, (range) => {
 
                 <div class="field-radiobutton">
                     <div class="p-inputgroup">
-                        <Dropdown v-model="store.query.filter.course"
-                                :options="store.assets.courses"
-                                optionValue="id"
-                                optionLabel="name"
-                                placeholder="Select your course"
-                                class="w-full"/>
+                        <MultiSelect
+                            v-model="store.query.filter.course"
+                            :options="store.assets.courses"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select course(s)"
+                            class="w-full"
+                            display="chip"
+                            :filter="true"
+                        />
                     </div>
                 </div>
                 

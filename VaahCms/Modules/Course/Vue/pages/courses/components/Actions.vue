@@ -100,7 +100,7 @@ function handleToggleFilter(filter_name){
                                 class="p-button-sm"
                                 :disabled="Object.keys(route.params).length"
                                 data-testid="courses-actions-show-filters"
-                                @click="store.show_filters = !store.show_filters">
+                                @click="handleToggleFilter('Filter')">
                                 Filters
                                 <Badge v-if="store.count_filters > 0" :value="store.count_filters"></Badge>
                             </Button>
