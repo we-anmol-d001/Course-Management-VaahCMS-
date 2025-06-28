@@ -10,12 +10,14 @@ use WebReinvent\VaahCms\Traits\CrudWithUuidObservantTrait;
 use WebReinvent\VaahCms\Models\User;
 use WebReinvent\VaahCms\Libraries\VaahSeeder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use VaahCms\Modules\Course\Traits\SendEmailDeleteTrait;
 
 class Course extends VaahModel
 {
 
     use SoftDeletes;
     use CrudWithUuidObservantTrait;
+    use SendEmailDeleteTrait;
 
     //-------------------------------------------------
     protected $table = 'co_courses';
@@ -382,8 +384,9 @@ class Course extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                self::whereIn('id', $items_id)
-                    ->get()->each->delete();
+                $records = self::whereIn('id', $items_id)->get();
+                $records->each->delete();
+                self::recordDeleted($records);
                 break;
             case 'restore':
                 self::whereIn('id', $items_id)->onlyTrashed()
@@ -460,7 +463,13 @@ class Course extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash-all':
-                $list->get()->each->delete();
+                $records=$list->get();
+                
+                if ($records->isEmpty()) {
+                 break; 
+                 }
+                $records->each->delete();
+                self::recordDeleted($records);                
                 break;
             case 'restore-all':
                 $list->onlyTrashed()->get()
@@ -598,8 +607,9 @@ class Course extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash':
-                self::find($id)
-                    ->delete();
+                $record=self::find($id);
+                $record->delete();
+                self::recordDeleted($record);
                 break;
             case 'restore':
                 self::where('id', $id)

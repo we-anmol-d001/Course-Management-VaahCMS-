@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factory;
 use VaahCms\Modules\Course\Providers\RouteServiceProvider;
 use VaahCms\Modules\Course\Providers\EventServiceProvider;
 use VaahCms\Modules\Course\Models\Student;
-use VaahCms\Modules\Course\Observers\StudentObserver;
+use VaahCms\Modules\Course\Observers\RecordDeletedObserver;
 
 class CourseServiceProvider extends ServiceProvider
 {
@@ -35,14 +35,22 @@ class CourseServiceProvider extends ServiceProvider
         $this->registerSeeders();
         $this->registerBladeDirectives();
         $this->registerBladeComponents();
-        $this->registerObservers();
+        $this->deleteStudent();
     }
     /** 
      * Register student observer function for sending the email.
      */
-    private function registerObservers()
+    private function deleteStudent()
     {
-    Student::observe(StudentObserver::class);
+    Student::observe(RecordDeletedObserver::class);
+    }
+    private function deleteTeacher()
+    {
+    Student::observe(RecordDeletedObserver::class);
+    }
+    private function deleteCourse()
+    {
+    Student::observe(RecordDeletedObserver::class);
     }
 
     /**
