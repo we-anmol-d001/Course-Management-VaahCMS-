@@ -368,13 +368,13 @@ class Student extends VaahModel
         return $query;
     }
 
-    public function scopeStudentRecord($query,$filter)
+    public function scopeStudentRecordByFilter($query,$filter)
     {
-        if (isset($filter['course_id'])) {
-            $id = $filter['course_id'];
+        if (isset($filter['course_uuid'])) {
+            $id = $filter['course_uuid'];
     
             return $query->whereHas('courses', function($q1) use ($id) {
-                $q1->where('co_courses.id', $id);
+                $q1->where('co_courses.uuid', $id);
             } );
         }
 
@@ -384,6 +384,7 @@ class Student extends VaahModel
     //-------------------------------------------------
     public static function getList($request)
     {
+        
         $list = self::getSorted($request->filter)->with('gender');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
@@ -391,8 +392,11 @@ class Student extends VaahModel
         $list->enrolledStudent($request->filter);
         $list->filterByDob($request->filter);
         $list->courseRange($request->filter);
-        $list->studentRecord($request->filter);
-
+        $list->studentRecordByFilter($request->filter);
+        
+        
+        $reloaded = $request->query('reloading');
+    
         $rows = config('vaahcms.per_page');
 
         if($request->has('rows'))
@@ -404,7 +408,12 @@ class Student extends VaahModel
 
         $response['success'] = true;
         $response['data'] = $list;
-
+        if($reloaded)
+        {
+       
+        
+        $response['messages'][] = trans("Page loaded...");
+        }
         return $response;
 
 

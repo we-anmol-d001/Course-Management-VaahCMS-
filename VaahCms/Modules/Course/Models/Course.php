@@ -322,11 +322,11 @@ class Course extends VaahModel
     //-------------------------------------------------
     public static function scopeStudentRecord($query,$filter)
     {
-        if (isset($filter['student_id'])) {
-            $id = $filter['student_id'];
+        if (isset($filter['student_uuid'])) {
+            $id = $filter['student_uuid'];
     
             return $query->whereHas('students', function($q1) use ($id) {
-                $q1->where('co_students.id', $id);
+                $q1->where('co_students.uuid', $id);
             } );
         }
 

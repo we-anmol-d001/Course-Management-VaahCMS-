@@ -19,6 +19,7 @@ let empty_states = {
             trashed: null,
             sort: null,
         },
+
     },
     action: {
         type: null,
@@ -66,7 +67,8 @@ export const useStudentStore = defineStore({
         list_create_menu: [],
         item_menu_list: [],
         item_menu_state: null,
-        form_menu_list: []
+        form_menu_list: [],
+       
     }),
     getters: {
 
@@ -211,7 +213,7 @@ export const useStudentStore = defineStore({
         async getList() {
             let options = {
                 query: vaah().clone(this.query)
-            };
+            };       
 
             this.assets_is_fetching = true;
             this.getAssets();
@@ -221,6 +223,7 @@ export const useStudentStore = defineStore({
                 this.afterGetList,
                 options
             );
+    
         },
         //---------------------------------------------------------------------
         afterGetList: function (data, res)
@@ -228,6 +231,7 @@ export const useStudentStore = defineStore({
             if(data)
             {
                 this.list = data;
+                
             }
         },
         //---------------------------------------------------------------------
@@ -952,6 +956,33 @@ export const useStudentStore = defineStore({
 
         },
         //---------------------------------------------------------------------
+        goToDetailCourses(student_uuid) {
+        this.$router.push({
+        name: 'courses.index',
+        query: {
+        filter: {
+        student_uuid: student_uuid
+             }
+         }
+        })
+        },
+        //----------------------------------------------------------------------
+        async reload(){          
+            await this.getList();
+            vaah().toastSuccess(["Page loaded..."]);
+        },
+        //----------------------------------------------------------------------
+        handleToggleFilter(filter_name){
+
+            if(filter_name === 'AdvanceFilter'){
+
+                this.show_advance_filters = !this.show_advance_filters
+                this.show_filters = false
+            } else if(filter_name === 'Filter') {
+                this.show_filters = !this.show_filters
+                this.show_advance_filters = false
+            }
+        },
     }
 });
 

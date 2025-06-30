@@ -6,10 +6,7 @@ import { useRouter } from 'vue-router';
 const store = useStudentStore();
 const useVaah = vaah();
 const router = useRouter();
-function goToDetail(student) {
-    router.push({ name: 'courses.index', query: { filter:{student_id: student.id} } });
 
-}
 
 </script>
 
@@ -68,7 +65,7 @@ function goToDetail(student) {
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                        <span @click="goToDetail(prop.data)" style="cursor: pointer; color: #007ad9;">
+                        <span @click="store.goToDetailCourses(prop.data.uuid)" style="cursor: pointer; color: #007ad9;">
                         {{ prop.data.course_count }}
                         </span>
                 </template>

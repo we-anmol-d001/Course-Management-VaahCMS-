@@ -6,14 +6,15 @@ import { useRouter } from 'vue-router';
 const store = useCourseStore();
 const useVaah = vaah();
 const router = useRouter();
-function goToDetail(course) {
-    router.push({ name: 'students.index', query: { filter:{course_id: course.id} } });
+// function goToDetailStudents(courses) {
+    
+//     router.push({ name: 'students.index', query: { filter:{courses_uuid: courses.uuid} } });
 
-}
-function goToDetailTeacher(teacher) {
-    router.push({ name: 'teachers.index', query: { filter:{teacher_id: teacher.id} } });
+// }
+// function goToDetailTeacher(teacher) {
+//     router.push({ name: 'teachers.index', query: { filter:{teacher_uuid: teacher.uuid} } });
 
-}
+// }
 </script>
 
 <template>
@@ -71,7 +72,7 @@ function goToDetailTeacher(teacher) {
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                           <span @click="goToDetail(prop.data)" style="cursor: pointer; color: #007ad9;">
+                           <span @click="store.goToDetailStudents(prop.data.uuid)" style="cursor: pointer; color: #007ad9;">
                             {{ prop.data.student_count }}
                             </span>
                     
@@ -87,7 +88,7 @@ function goToDetailTeacher(teacher) {
                     <Badge v-if="prop.data.deleted_at"
                            value="Trashed"
                            severity="danger"></Badge>
-                           <span @click="goToDetailTeacher(prop.data)" style="cursor: pointer; color: #007ad9;">
+                           <span @click="store.goToDetailTeacher(prop.data.uuid)" style="cursor: pointer; color: #007ad9;">
                             {{ prop.data.teacher_count }}
                             </span>
                     

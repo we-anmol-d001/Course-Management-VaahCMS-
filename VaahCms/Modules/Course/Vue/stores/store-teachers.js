@@ -939,6 +939,22 @@ export const useTeacherStore = defineStore({
 
         },
         //---------------------------------------------------------------------
+         async reload(){          
+            await this.getList();
+            vaah().toastSuccess(["Page loaded..."]);
+        },
+        //---------------------------------------------------------------------
+        handleToggleFilter(filter_name){
+
+            if(filter_name === 'AdvanceFilter'){
+
+                this.show_advance_filters = !this.show_advance_filters
+                this.show_filters = false
+            } else if(filter_name === 'Filter') {
+                this.show_filters = !this.show_filters
+                this.show_advance_filters = false
+            }
+        }
     }
 });
 

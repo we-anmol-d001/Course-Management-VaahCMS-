@@ -935,7 +935,51 @@ export const useCourseStore = defineStore({
 
         },
         //---------------------------------------------------------------------
+        // Action for redirecting to specific details
+        goToDetailTeacher(course_uuid) {
+        this.$router.push({
+        name: 'teachers.index',
+        query: {
+        filter: {
+        course_uuid: course_uuid
+             }
+         }
+        })
+        },
+        //---------------------------------------------------------------------
+        goToDetailStudents(course_uuid) {
+        this.$router.push({
+        name: 'students.index',
+        query: {
+        filter: {
+        course_uuid: course_uuid
+             }
+         }
+        })
+        },
+        //---------------------------------------------------------------------
+        async reload(){          
+            await this.getList();
+            vaah().toastSuccess(["Page loaded..."]);
+        },
+        //---------------------------------------------------------------------
+        handleToggleFilter(filter_name){
+
+            if(filter_name === 'AdvanceFilter'){
+
+                this.show_advance_filters = !this.show_advance_filters
+                this.show_filters = false
+            } else if(filter_name === 'Filter') {
+                this.show_filters = !this.show_filters
+                this.show_advance_filters = false
+            }
+        }
+
     }
+
+    
+        
+        
 });
 
 

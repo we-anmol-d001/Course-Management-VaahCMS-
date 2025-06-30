@@ -322,13 +322,13 @@ class Teacher extends VaahModel
         });
     }
     //-------------------------------------------------
-    public function scopeteacherRecord($query,$filter)
+    public function scopeteacherRecordByRedirect($query,$filter)
     {
-        if (isset($filter['teacher_id'])) {
-            $id = $filter['teacher_id'];
+        if (isset($filter['course_uuid'])) {
+            $id = $filter['course_uuid'];
     
             return $query->whereHas('course', function($q1) use ($id) {
-                $q1->where('co_courses.id', $id);
+                $q1->where('co_courses.uuid', $id);
             } );
         }
 
@@ -342,7 +342,7 @@ class Teacher extends VaahModel
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->courseAllotted($request->filter);
-        $list->teacherRecord($request->filter);
+        $list->teacherRecordByRedirect($request->filter);
 
         $rows = config('vaahcms.per_page');
 

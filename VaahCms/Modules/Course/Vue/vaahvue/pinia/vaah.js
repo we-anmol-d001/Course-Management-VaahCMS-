@@ -43,7 +43,7 @@ export const vaah = defineStore({
       let query = default_option.query
       let headers = default_option.headers
       let show_success = default_option.show_success
-
+      
       //To make axios request as ajax request
       if (headers && headers['Authorization']) {
         axios.defaults.headers.common = {

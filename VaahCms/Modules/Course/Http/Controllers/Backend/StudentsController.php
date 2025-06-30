@@ -155,7 +155,6 @@ class StudentsController extends Controller
     {
         try{
            
-            // dd($courseIds);
             return Student::createItem($request);
 
         }catch (\Exception $e){
