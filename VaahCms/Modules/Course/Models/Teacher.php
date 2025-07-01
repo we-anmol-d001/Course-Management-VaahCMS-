@@ -693,7 +693,7 @@ class Teacher extends VaahModel
             $item =  new self();
             $item->fill($inputs);
             
-            $item->course_id = $inputs['course'];
+            $item->course_id = $inputs['course_id'];
             $item->save();
 
             $i++;

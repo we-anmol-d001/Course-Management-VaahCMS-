@@ -52,7 +52,6 @@ class Course extends VaahModel
     //Accessor for adding the columns in the table.
     public function studentCount(): Attribute
     {
-    
         return Attribute::make(
             get: fn() => $this->students()->count() ?? null,
         );
@@ -60,12 +59,10 @@ class Course extends VaahModel
 
     public function teacherCount(): Attribute
     {
-    
         return Attribute::make(
             get: fn() => $this->teachers()->count() ?? null,
         );
     }
-
 
     //Relationship between the teacher and student table.
     public function teachers()
@@ -75,7 +72,7 @@ class Course extends VaahModel
 
     public function students()
     {
-     return $this->belongsToMany(Student::class, 'co_course_co_student', 'co_course_id', 'co_student_id');
+     return $this->belongsToMany(Student::class, 'co_course_students', 'co_course_id', 'co_student_id');
     }
 
     //-------------------------------------------------
@@ -205,7 +202,6 @@ class Course extends VaahModel
             return $validation;
         }
 
-
         // check if name exist
         $item = self::where('name', $inputs['name'])->withTrashed()->first();
 
@@ -329,13 +325,11 @@ class Course extends VaahModel
                 $q1->where('co_students.uuid', $id);
             } );
         }
-
         return $query;
     }
     //-------------------------------------------------
     public function scopeEnrolledCourses($query, $filter)
     {
-        
         if (empty($filter['student']) || !is_array($filter['student'])) {
             
             return $query;
@@ -357,7 +351,6 @@ class Course extends VaahModel
         $list->studentRecord($request->filter);
         $list->enrolledCourses($request->filter);
         
-
         $rows = config('vaahcms.per_page');
 
         if($request->has('rows'))
@@ -366,15 +359,11 @@ class Course extends VaahModel
         }
 
         $list = $list->paginate($rows);
-       
-        
 
         $response['success'] = true;
         $response['data'] = $list;
 
         return $response;
-
-
     }
 
     //-------------------------------------------------
@@ -390,7 +379,6 @@ class Course extends VaahModel
         $messages = array(
             'type.required' => trans("vaahcms-general.action_type_is_required"),
         );
-
 
         $validator = \Validator::make($inputs, $rules, $messages);
         if ($validator->fails()) {
@@ -500,8 +488,7 @@ class Course extends VaahModel
                     ->update(['is_active' => null]);
                 break;
             case 'trash-all':
-                $records=$list->get();
-                
+                $records=$list->get();        
                 if ($records->isEmpty()) {
                  break; 
                  }
@@ -550,7 +537,6 @@ class Course extends VaahModel
     //-------------------------------------------------
     public static function getItem($id)
     {
-
         $item = self::where('id', $id)
             ->with(['createdByUser', 'updatedByUser', 'deletedByUser'])
             ->withTrashed()
@@ -566,7 +552,6 @@ class Course extends VaahModel
         $response['data'] = $item;
 
         return $response;
-
     }
     //-------------------------------------------------
     public static function updateItem($request, $id)

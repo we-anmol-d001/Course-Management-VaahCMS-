@@ -59,19 +59,18 @@ class Student extends VaahModel
     //-------------------------------------------------
     //Accessor to add the field in the table of course
      public function courseCount(): Attribute
-    {
-    
+    {    
         return Attribute::make(
             get: fn() => $this->courses->count(),
         );
     }
-
     
     // for relationship between the courses and student.
     public function courses()
     {
-    return $this->belongsToMany(Course::class,'co_course_co_student','co_student_id','co_course_id');
+    return $this->belongsToMany(Course::class,'co_course_students','co_student_id','co_course_id');
     }
+    //Relationship for fetching the data form the texonomy.
     public function gender()
     {
         return $this->belongsTo(Taxonomy::class,
@@ -191,7 +190,6 @@ class Student extends VaahModel
             return $validation;
         }
 
-
         // check if name exist
         $item = self::where('name', $inputs['name'])->withTrashed()->first();
 
@@ -212,7 +210,6 @@ class Student extends VaahModel
             return $response;
         }
 
-        //Implementing many to many relationship between courses and student table
         $course_ids = $inputs['courses'];
         
         $item = new self();
@@ -228,9 +225,7 @@ class Student extends VaahModel
         $to = [$item->email];
         
         // For sending the email
-        // VaahMail::send($mail, $to); 
-
-       
+        VaahMail::addInQueue($mail, $to);  
 
         $response = self::getItem($item->id);
         $response['messages'][] = trans("vaahcms-general.saved_successfully");
@@ -248,7 +243,6 @@ class Student extends VaahModel
         }
 
         $sort = $filter['sort'];
-
 
         $direction = Str::contains($sort, ':');
 
@@ -335,7 +329,7 @@ class Student extends VaahModel
             $q->whereIn('co_course_id', $filter['course']);
         });
     }
-
+    //--------------------------------------------------
     public function scopeFilterByDob($query, $filter)
     {
         
@@ -353,7 +347,7 @@ class Student extends VaahModel
 
         return $query;
     }
-
+    //------------------------------------------------------
     public function scopeCourseRange($query, $filter)
     {
         if (isset($filter['course_count_min']) && isset($filter['course_count_max'])) {
@@ -367,7 +361,7 @@ class Student extends VaahModel
 
         return $query;
     }
-
+    //--------------------------------------------------------
     public function scopeStudentRecordByFilter($query,$filter)
     {
         if (isset($filter['course_uuid'])) {
@@ -383,8 +377,7 @@ class Student extends VaahModel
 
     //-------------------------------------------------
     public static function getList($request)
-    {
-        
+    {        
         $list = self::getSorted($request->filter)->with('gender');
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
@@ -393,8 +386,7 @@ class Student extends VaahModel
         $list->filterByDob($request->filter);
         $list->courseRange($request->filter);
         $list->studentRecordByFilter($request->filter);
-        
-        
+           
         $reloaded = $request->query('reloading');
     
         $rows = config('vaahcms.per_page');
@@ -410,15 +402,10 @@ class Student extends VaahModel
         $response['data'] = $list;
         if($reloaded)
         {
-       
-        
         $response['messages'][] = trans("Page loaded...");
         }
         return $response;
-
-
     }
-
     //-------------------------------------------------
     public static function updateList($request)
     {
@@ -432,7 +419,6 @@ class Student extends VaahModel
         $messages = array(
             'type.required' => trans("vaahcms-general.action_type_is_required"),
         );
-
 
         $validator = \Validator::make($inputs, $rules, $messages);
         if ($validator->fails()) {
@@ -463,7 +449,6 @@ class Student extends VaahModel
                 })->update(['is_active' => 1]);
                 break;
             case 'trash':
-                 
                 $records = self::whereIn('id', $items_id)->get();
                 $records->each->delete();
                 self::recordDeleted($records);
@@ -481,7 +466,7 @@ class Student extends VaahModel
         return $response;
     }
 
-    //-------------------------------------------------
+    //---------------------------------------------------------
     public static function deleteList($request): array
     {
         
@@ -521,7 +506,6 @@ class Student extends VaahModel
 
         return $response;
     }
-    //-------------------------------------------------
     
     //-------------------------------------------------
      public static function listAction($request, $type): array
@@ -776,7 +760,7 @@ class Student extends VaahModel
         }
 
     }
- 
+    //---------------------------------------------------
     // Custom Utility Methods
     public static function getGender(){
         $genders = Taxonomy::getTaxonomyByType('gender');

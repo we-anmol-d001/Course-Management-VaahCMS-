@@ -36,8 +36,6 @@ class StudentsController extends Controller
             $courses = Course::all();
             $data['courses'] = $courses;
             $data['total_courses'] = $courses->count();
-
-          
             
             $taxonomy_type_slug = 'gender';
             $data['gender_taxonomies'] = Taxonomy::getTaxonomyByType($taxonomy_type_slug);

@@ -67,8 +67,7 @@ export const useStudentStore = defineStore({
         list_create_menu: [],
         item_menu_list: [],
         item_menu_state: null,
-        form_menu_list: [],
-       
+        form_menu_list: [],     
     }),
     getters: {
 
@@ -230,8 +229,7 @@ export const useStudentStore = defineStore({
         {
             if(data)
             {
-                this.list = data;
-                
+                this.list = data; 
             }
         },
         //---------------------------------------------------------------------
@@ -951,9 +949,7 @@ export const useStudentStore = defineStore({
                     this.getFormInputs();
                 }
             },)
-
             this.form_menu_list = form_menu;
-
         },
         //---------------------------------------------------------------------
         goToDetailCourses(student_uuid) {
@@ -969,13 +965,11 @@ export const useStudentStore = defineStore({
         //----------------------------------------------------------------------
         async reload(){          
             await this.getList();
-            vaah().toastSuccess(["Page loaded..."]);
+            vaah().toastSuccess(["Page Reloaded!"]);
         },
         //----------------------------------------------------------------------
         handleToggleFilter(filter_name){
-
             if(filter_name === 'AdvanceFilter'){
-
                 this.show_advance_filters = !this.show_advance_filters
                 this.show_filters = false
             } else if(filter_name === 'Filter') {
@@ -985,8 +979,6 @@ export const useStudentStore = defineStore({
         },
     }
 });
-
-
 
 // Pinia hot reload
 if (import.meta.hot) {

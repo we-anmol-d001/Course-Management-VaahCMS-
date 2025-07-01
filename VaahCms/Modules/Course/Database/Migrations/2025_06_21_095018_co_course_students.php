@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CoCourseCoStudent extends Migration
+class CoCourseStudents extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class CoCourseCoStudent extends Migration
     public function up()
     {
 
-        Schema::create('co_course_co_student', function (Blueprint $table) {
+        Schema::create('co_course_students', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uuid')->nullable()->index();
             $table->unsignedBigInteger('co_student_id')->nullable()->index();

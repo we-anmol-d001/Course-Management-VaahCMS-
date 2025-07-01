@@ -941,7 +941,7 @@ export const useTeacherStore = defineStore({
         //---------------------------------------------------------------------
          async reload(){          
             await this.getList();
-            vaah().toastSuccess(["Page loaded..."]);
+            vaah().toastSuccess(["Page Reloaded!"]);
         },
         //---------------------------------------------------------------------
         handleToggleFilter(filter_name){

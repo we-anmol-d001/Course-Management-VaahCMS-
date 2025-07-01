@@ -6,15 +6,7 @@ import { useRouter } from 'vue-router';
 const store = useCourseStore();
 const useVaah = vaah();
 const router = useRouter();
-// function goToDetailStudents(courses) {
-    
-//     router.push({ name: 'students.index', query: { filter:{courses_uuid: courses.uuid} } });
 
-// }
-// function goToDetailTeacher(teacher) {
-//     router.push({ name: 'teachers.index', query: { filter:{teacher_uuid: teacher.uuid} } });
-
-// }
 </script>
 
 <template>

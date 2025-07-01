@@ -960,13 +960,11 @@ export const useCourseStore = defineStore({
         //---------------------------------------------------------------------
         async reload(){          
             await this.getList();
-            vaah().toastSuccess(["Page loaded..."]);
+            vaah().toastSuccess(["Page Reloaded!"]);
         },
         //---------------------------------------------------------------------
         handleToggleFilter(filter_name){
-
             if(filter_name === 'AdvanceFilter'){
-
                 this.show_advance_filters = !this.show_advance_filters
                 this.show_filters = false
             } else if(filter_name === 'Filter') {
@@ -974,15 +972,8 @@ export const useCourseStore = defineStore({
                 this.show_advance_filters = false
             }
         }
-
-    }
-
-    
-        
-        
+    }      
 });
-
-
 
 // Pinia hot reload
 if (import.meta.hot) {
