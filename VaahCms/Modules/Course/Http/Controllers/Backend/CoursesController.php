@@ -32,7 +32,9 @@ class CoursesController extends Controller
             $data['fillable']['except'] = Course::getUnFillableColumns();
             $data['empty_item'] = Course::getEmptyItem();
             $student=Student::all();
+            $teacher=Teacher::all();
             $data['students']= $student;
+            $data['teachers']= $teacher;
             $data['total_students'] = $student->count();
 
             $data['actions'] = [];

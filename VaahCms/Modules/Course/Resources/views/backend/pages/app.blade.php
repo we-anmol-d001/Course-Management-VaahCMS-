@@ -22,7 +22,7 @@
 
     <div class="primevue">
         <div id="appCourse">
-
+       
 
         </div>
     </div>

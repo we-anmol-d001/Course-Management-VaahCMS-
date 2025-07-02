@@ -609,7 +609,15 @@ export const useStudentStore = defineStore({
             if(query && query.filter)
             {
                 let filter = vaah().cleanObject(query.filter);
-                this.count_filters = Object.keys(filter).length;
+            
+                const excludeKeys = ['course_uuid'];
+
+                const filtered = Object.fromEntries(
+                    Object.entries(filter).filter(([key, value]) => !excludeKeys.includes(key))
+                );
+                
+                this.count_filters = Object.keys(filtered).length;
+                // this.count_filters = Object.keys(filter).length;
             }
         },
         //---------------------------------------------------------------------

@@ -311,14 +311,12 @@ class Teacher extends VaahModel
     //-------------------------------------------------
     public function scopeCourseAllotted($query, $filter)
     {
-        if (!isset($filter['course'])) {
+        if (empty($filter['course']) || !is_array($filter['course'])) {
             return $query;
         }
 
-        $courseIds = explode(' ', $filter['course']);
-
-        return $query->whereHas('course', function ($q) use ($courseIds) {
-            $q->whereIn('id', $courseIds);
+            return $query->whereHas('course', function ($q) use ($filter) {
+            $q->whereIn('id', $filter['course']);
         });
     }
     //-------------------------------------------------

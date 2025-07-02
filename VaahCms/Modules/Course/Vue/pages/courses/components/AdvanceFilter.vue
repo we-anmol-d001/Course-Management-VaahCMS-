@@ -88,6 +88,28 @@ watch(student_count_range, (range) => {
                 
             </VhFieldVertical>
 
+            <VhFieldVertical >
+                <template #label>
+                    <b>Select teachers:</b>
+                </template>
+
+                <div class="field-radiobutton">
+                    <div class="p-inputgroup">
+                        <MultiSelect
+                            v-model="store.query.filter.teacher"
+                            :options="store.assets.teachers"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Select teacher(s)"
+                            class="w-full"
+                            display="chip"
+                            :filter="true"
+                        />
+                    </div>
+                </div>
+                
+            </VhFieldVertical>
+
              
 
            

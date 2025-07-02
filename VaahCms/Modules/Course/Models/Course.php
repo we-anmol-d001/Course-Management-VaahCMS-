@@ -339,6 +339,17 @@ class Course extends VaahModel
             $q->whereIn('co_student_id', $filter['student']);
         });
     }
+    //-------------------------------------------------
+    public function scopeTeacherRecord($query, $filter)
+    {
+        if (empty($filter['teacher']) || !is_array($filter['teacher'])) {
+            return $query;
+        }
+
+            return $query->whereHas('teachers', function ($q) use ($filter) {
+            $q->whereIn('id', $filter['teacher']);
+        });
+    }
 
     //-------------------------------------------------
     public static function getList($request)
@@ -350,6 +361,7 @@ class Course extends VaahModel
         $list->studentCountFilter($request->filter);
         $list->studentRecord($request->filter);
         $list->enrolledCourses($request->filter);
+        $list->teacherRecord($request->filter);
         
         $rows = config('vaahcms.per_page');
 

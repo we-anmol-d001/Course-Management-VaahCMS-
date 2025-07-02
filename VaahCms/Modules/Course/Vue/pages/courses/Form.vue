@@ -102,9 +102,6 @@ const toggleFormMenu = (event) => {
                             @click="store.toList()">
                     </Button>
                 </div>
-
-
-
             </template>
 
 
