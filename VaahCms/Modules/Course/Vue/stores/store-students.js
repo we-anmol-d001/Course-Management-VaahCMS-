@@ -62,6 +62,7 @@ export const useStudentStore = defineStore({
         },
         is_list_loading: null,
         count_filters: 0,
+        count_advance_filters: 0,
         list_selected_menu: [],
         list_bulk_menu: [],
         list_create_menu: [],
@@ -119,19 +120,34 @@ export const useStudentStore = defineStore({
         //---------------------------------------------------------------------
         async updateQueryFromUrl(route)
         {
-            if(route.query)
-            {
-                if(Object.keys(route.query).length > 0)
-                {
-                    for(let key in route.query)
-                    {
-                        this.query[key] = route.query[key]
+            if (route.query && Object.keys(route.query).length > 0) {
+                for (let key in route.query) {
+                    let value = route.query[key];
+
+                    if (key === 'filter' && typeof value === 'object') {
+                        let normalizedFilter = { ...value };
+
+                        if ('course' in normalizedFilter) {
+                            let courseValue = normalizedFilter.course;
+
+                            if (Array.isArray(courseValue)) {
+                                normalizedFilter.course = courseValue.map(v =>
+                                    (typeof v === 'string' && !isNaN(v)) ? Number(v) : v
+                                );
+                            } else if (typeof courseValue === 'string' && !isNaN(courseValue)) {
+                                normalizedFilter.course = Number(courseValue);
+                            }
+                        }
+                        this.query.filter = normalizedFilter;
+
+                    } else if (typeof value === 'string' && !isNaN(value.trim())) {
+                        this.query[key] = Number(value);
+                    } else {
+                        this.query[key] = value;
                     }
-                    if(this.query.rows){
-                        this.query.rows = parseInt(this.query.rows);
-                    }
-                    this.countFilters(route.query);
                 }
+
+                this.countFilters(route.query);
             }
         },
         //---------------------------------------------------------------------
@@ -606,18 +622,23 @@ export const useStudentStore = defineStore({
         countFilters: function (query)
         {
             this.count_filters = 0;
+            this.count_advance_filters = 0;
             if(query && query.filter)
             {
                 let filter = vaah().cleanObject(query.filter);
             
-                const excludeKeys = ['course_uuid'];
+                const advancedFilterKeys = ['dob_from','course','course_count_max']; 
+                const excludeKeys = ['course_uuid','course_count_min']; 
 
-                const filtered = Object.fromEntries(
-                    Object.entries(filter).filter(([key, value]) => !excludeKeys.includes(key))
-                );
-                
-                this.count_filters = Object.keys(filtered).length;
-                // this.count_filters = Object.keys(filter).length;
+                for (let [key, value] of Object.entries(filter)) {
+                    if (excludeKeys.includes(key)) {
+                        continue; 
+                    } else if (advancedFilterKeys.includes(key)) {
+                        this.count_advance_filters += 1;
+                    } else  {
+                        this.count_filters += 1;
+                    }
+                }
             }
         },
         //---------------------------------------------------------------------

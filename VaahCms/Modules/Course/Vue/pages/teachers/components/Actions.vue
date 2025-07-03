@@ -59,6 +59,7 @@ const toggleBulkMenuState = (event) => {
                                 data-testid="students-actions-show-advance_filters"
                                 @click="store.handleToggleFilter('AdvanceFilter')">
                                 Advance Filters
+                                <Badge v-if="store.count_advance_filters > 0" :value="store.count_advance_filters"></Badge>
                             </Button>
             </div>
             <!--/left-->

@@ -36,36 +36,14 @@ const store = useTeacherStore();
                     </div>
 
                 </template>
-
-            
             <Divider/>
 
-            
-            
-
-             <VhFieldVertical >
-                <template #label>
-                    <b>Course:</b>
-                </template>
-
-                <!-- <div class="field-radiobutton">
-                    <div class="p-inputgroup">
-                        <Dropdown v-model="store.query.filter.course"
-                                :options="store.assets.courses"
-                                optionValue="id"
-                                optionLabel="name"
-                                placeholder="Select your course"
-                                class="w-full"/>
-                    </div>
-                </div>
-                 -->
-            </VhFieldVertical>
-             <VhFieldVertical >
+            <VhFieldVertical >
 
                 <template #label>
                     <b>Select multiple Courses:</b>
                 </template>
-
+                
                 <div class="field-radiobutton">
                     <div class="p-inputgroup">
                          <MultiSelect
