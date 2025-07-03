@@ -124,20 +124,20 @@ export const useTeacherStore = defineStore({
                     let value = route.query[key];
 
                     if (key === 'filter' && typeof value === 'object') {
-                        let normalizedFilter = { ...value };
+                        let normalized_filter = { ...value };
 
-                        if ('course' in normalizedFilter) {
-                            let courseValue = normalizedFilter.course;
+                        if ('course' in normalized_filter) {
+                            let course_value = normalized_filter.course;
 
-                            if (Array.isArray(courseValue)) {
-                                normalizedFilter.course = courseValue.map(v =>
+                            if (Array.isArray(course_value)) {
+                                normalized_filter.course = course_value.map(v =>
                                     (typeof v === 'string' && !isNaN(v)) ? Number(v) : v
                                 );
-                            } else if (typeof courseValue === 'string' && !isNaN(courseValue)) {
-                                normalizedFilter.course = Number(courseValue);
+                            } else if (typeof course_value === 'string' && !isNaN(course_value)) {
+                                normalized_filter.course = Number(course_value);
                             }
                         }
-                        this.query.filter = normalizedFilter;
+                        this.query.filter = normalized_filter;
 
                     } else if (typeof value === 'string' && !isNaN(value.trim())) {
                         this.query[key] = Number(value);

@@ -124,24 +124,24 @@ export const useCourseStore = defineStore({
                     let value = route.query[key];
 
                     if (key === 'filter' && typeof value === 'object') {
-                        let normalizedFilter = { ...value };
+                        let normalized_filter = { ...value };
 
-                         const numericFilterKeys = ['teacher', 'student'];
+                         const numeric_filter_keys = ['teacher', 'student'];
 
-                        for (let filterKey of numericFilterKeys) {
-                            if (filterKey in normalizedFilter) {
-                                let fieldValue = normalizedFilter[filterKey];
+                        for (let filterKey of numeric_filter_keys) {
+                            if (filterKey in normalized_filter) {
+                                let field_value = normalized_filter[filterKey];
 
-                                if (Array.isArray(fieldValue)) {
-                                    normalizedFilter[filterKey] = fieldValue.map(v =>
+                                if (Array.isArray(field_value)) {
+                                    normalized_filter[filterKey] = field_value.map(v =>
                                         (typeof v === 'string' && !isNaN(v)) ? Number(v) : v
                                     );
-                                } else if (typeof fieldValue === 'string' && !isNaN(fieldValue)) {
-                                    normalizedFilter[filterKey] = Number(fieldValue);
+                                } else if (typeof field_value === 'string' && !isNaN(field_value)) {
+                                    normalized_filter[filterKey] = Number(field_value);
                                 }
                             }
                         }
-                        this.query.filter = normalizedFilter;
+                        this.query.filter = normalized_filter;
 
                     } else if (typeof value === 'string' && !isNaN(value.trim())) {
                         this.query[key] = Number(value);
