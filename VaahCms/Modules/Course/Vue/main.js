@@ -37,6 +37,8 @@ import Calendar from 'primevue/calendar';
 import MultiSelect from 'primevue/multiselect';
 import InputNumber from 'primevue/inputnumber';
 import Slider from 'primevue/slider';
+import AutoComplete from 'primevue/autocomplete';
+
 
 
 //-------------/CRUD PrimeVue Imports
@@ -96,6 +98,7 @@ app.component('Calendar',Calendar)
 app.component('MultiSelect',MultiSelect)
 app.component('InputNumber',InputNumber)
 app.component('Slider',Slider)
+app.component('AutoComplete',AutoComplete)
 
 //-------------/CRUD PrimeVue Use
 

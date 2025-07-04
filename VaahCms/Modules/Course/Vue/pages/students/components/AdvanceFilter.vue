@@ -79,7 +79,7 @@ watch(course_count_range, (range) => {
                     </div>
                 </div>
                 <div class="text-sm mt-1 text-gray-500">
-                    {{ course_count_range[0] }} - {{store.assets.total_courses }}
+                    {{ course_count_range[0] }} - {{course_count_range[1] }}
                 </div>
                 
             </VhFieldVertical>

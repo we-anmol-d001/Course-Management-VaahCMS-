@@ -301,7 +301,7 @@ class Course extends VaahModel
 
     }
     //-------------------------------------------------
-    public static function scopeStudentRecord($query,$filter)
+    public static function scopeStudentRecordOnRedirect($query,$filter)
     {
         if (isset($filter['student_uuid'])) {
             $id = $filter['student_uuid'];
@@ -313,18 +313,7 @@ class Course extends VaahModel
         return $query;
     }
     //-------------------------------------------------
-    public function scopeEnrolledCourses($query, $filter)
-    {
-        if (empty($filter['student']) || !is_array($filter['student'])) {
-            
-            return $query;
-        }
-     
-        return $query->whereHas('students', function ($q) use ($filter) {
-            $q->whereIn('co_student_id', $filter['student']);
-        });
-    }
-    //-------------------------------------------------
+   
     public function scopeTeacherRecord($query, $filter)
     {
         if (empty($filter['teacher']) || !is_array($filter['teacher'])) {
@@ -353,6 +342,20 @@ class Course extends VaahModel
     }
 
     //-------------------------------------------------
+    public function scopeStudentRecordsAutoComplete($query, $filter)
+    {
+        
+        if (empty($filter['student']) || !is_array($filter['student'])) {
+            return $query;
+            }
+
+            return $query->whereHas('students', function ($q) use ($filter) {
+            $q->whereIn('co_student_id', $filter['student']);
+        });
+
+    }
+
+    //-------------------------------------------------
     public static function getList($request)
     {
         $list = self::getSorted($request->filter);
@@ -360,9 +363,9 @@ class Course extends VaahModel
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
         $list->studentCountFilter($request->filter);
-        $list->studentRecord($request->filter);
-        $list->enrolledCourses($request->filter);
+        $list->StudentRecordOnRedirect($request->filter);
         $list->teacherRecord($request->filter);
+        $list->studentRecordsAutoComplete($request->filter);
         
         $rows = config('vaahcms.per_page');
 
@@ -748,6 +751,22 @@ class Course extends VaahModel
     }
 
     //-------------------------------------------------
+    public static function getAutoComplete($request)
+    {
+        // dd("hello");
+       $query = $request->get('query', '');
+
+        if (!$query) {
+            return collect();
+        }
+
+        $students=Student::whereHas('courses')
+            ->where('name', 'like', '%' . $query . '%')
+            ->limit(10)
+            ->get(['id', 'name']);
+        return $students;
+    }
+
     //-------------------------------------------------
     //-------------------------------------------------
 

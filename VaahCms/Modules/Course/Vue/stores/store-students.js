@@ -627,13 +627,13 @@ export const useStudentStore = defineStore({
             {
                 let filter = vaah().cleanObject(query.filter);
             
-                const advancedFilterKeys = ['dob_from','course','course_count_max']; 
-                const excludeKeys = ['course_uuid','course_count_min']; 
+                const advanced_filter_keys = ['dob_from','course','course_count_min', 'course_count_max' ]; 
+                const exclude_keys = ['course_uuid']; 
 
                 for (let [key, value] of Object.entries(filter)) {
-                    if (excludeKeys.includes(key)) {
+                    if (exclude_keys.includes(key)) {
                         continue; 
-                    } else if (advancedFilterKeys.includes(key)) {
+                    } else if (advanced_filter_keys.includes(key)) {
                         this.count_advance_filters += 1;
                     } else  {
                         this.count_filters += 1;

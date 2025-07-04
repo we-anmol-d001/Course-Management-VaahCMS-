@@ -61,29 +61,33 @@ watch(student_count_range, (range) => {
                     </div>
                 </div>
                 <div class="text-sm mt-1 text-gray-500">
-                    {{ student_count_range[0] }} - {{store.assets.total_students }}
+                    {{ student_count_range[0] }} - {{student_count_range[1] }}
                 </div>
                 
             </VhFieldVertical>
-            
+
             <VhFieldVertical >
                 <template #label>
                     <b>Select student to see their courses:</b>
                 </template>
 
-                <div class="field-radiobutton">
-                    <div class="p-inputgroup">
-                        <MultiSelect
-                            v-model="store.query.filter.student"
-                            :options="store.assets.students"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Select student(s)"
-                            class="w-full"
-                            display="chip"
-                            :filter="true"
-                        />
-                    </div>
+               <div class="field-radiobutton">
+                  
+                <div class="p-inputgroup">
+                    <AutoComplete
+                    v-model="store.query.filter.student"
+                  
+                    :suggestions="store.auto_filter_list"  
+                    placeholder="Select student(s)"
+                    class="w-full"
+                    display="chip"
+                    :filter="false"                       
+                    :multiple="true"
+                    :field="'name'"                     
+                    :optionValue="'id'"                      
+                    @complete="store.searchStudents"           
+                    />
+                </div>
                 </div>
                 
             </VhFieldVertical>

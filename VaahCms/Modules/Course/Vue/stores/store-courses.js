@@ -18,6 +18,7 @@ let empty_states = {
             is_active: null,
             trashed: null,
             sort: null,
+            studented : [],
         },
     },
     action: {
@@ -67,7 +68,9 @@ export const useCourseStore = defineStore({
         list_create_menu: [],
         item_menu_list: [],
         item_menu_state: null,
-        form_menu_list: []
+        form_menu_list: [],
+        auto_student:[],
+        auto_filter_list:null,
     }),
     getters: {
 
@@ -244,8 +247,8 @@ export const useCourseStore = defineStore({
         afterGetList: function (data, res)
         {
             if(data)
-            {
-                this.list = data;
+            {   
+                this.list = data;              
             }
         },
         //---------------------------------------------------------------------
@@ -1004,7 +1007,26 @@ export const useCourseStore = defineStore({
                 this.show_filters = !this.show_filters
                 this.show_advance_filters = false
             }
+        },
+        //---------------------------------------------------------------------
+        searchStudents(event) {
+            const query = event.query;
+
+            vaah().ajax(
+                `/backend/course/courses/students-autocomplete?query=${encodeURIComponent(query)}`,
+                (res) => {
+                    
+                    if (Array.isArray(res)) {
+                        this.auto_filter_list = res;
+                    } else {
+                        this.auto_filter_list = [];
+                    }
+                    
+                }
+
+            );
         }
+
     }      
 });
 

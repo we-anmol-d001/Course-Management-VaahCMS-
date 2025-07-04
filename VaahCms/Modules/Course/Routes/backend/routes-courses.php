@@ -13,6 +13,11 @@ function () {
     /**
      * Get Assets
      */
+    Route::get('/students-autocomplete', [CoursesController::class, 'autocompleteStudents'])
+    ->name('vh.backend.course.courses.students.autocomplete');
+     /**
+     * Auto complete route
+     */
     Route::get('/assets', [CoursesController::class, 'getAssets'])
         ->name('vh.backend.course.courses.assets');
     /**
@@ -72,5 +77,6 @@ function () {
         ->name('vh.backend.course.courses.item.action');
 
     //---------------------------------------------------------
+   
 
 });

@@ -37,6 +37,7 @@ class CoursesController extends Controller
             $data['teachers']= $teacher;
             $data['total_students'] = $student->count();
 
+
             $data['actions'] = [];
 
             $response['success'] = true;
@@ -59,6 +60,7 @@ class CoursesController extends Controller
     //----------------------------------------------------------
     public function getList(Request $request)
     {
+        
         try{
             return Course::getList($request);
         }catch (\Exception $e){
@@ -231,6 +233,27 @@ class CoursesController extends Controller
         }
     }
     //----------------------------------------------------------
+
+    public function autocompleteStudents(Request $request)
+    {
+        try {
+            $students = Course::getAutoComplete($request);
+
+            $response['success'] = true;
+            $response['data'] = $students;
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            $response = ['success' => false];
+            if (env('APP_DEBUG')) {
+                $response['errors'][] = $e->getMessage();
+                $response['hint'] = $e->getTrace();
+            } else {
+                $response['errors'][] = trans("vaahcms-general.something_went_wrong");
+            }
+            return response()->json($response, 500);
+        }
+    }
 
 
 }
